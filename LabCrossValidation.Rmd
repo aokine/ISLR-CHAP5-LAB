@@ -1,0 +1,44 @@
+---
+title: 'Lab: Cross-Validation'
+author: "Your Name Here"
+date: 'Last Compiled: `r format(Sys.time(), "%B %d, %Y")`'
+output: 
+  bookdown::html_document2: 
+    highlight: textmate
+    theme: yeti
+---
+
+```{r, label = "SETUP", echo = FALSE, results= 'hide', message = FALSE, warning = FALSE}
+library(knitr)
+knitr::opts_chunk$set(comment = NA, fig.align = 'center', fig.height = 5, fig.width = 5, prompt = FALSE, highlight = TRUE, tidy = FALSE, warning = FALSE, message = FALSE, tidy.opts=list(blank = TRUE, width.cutoff = 80))
+```
+
+# The Validation Set Approach
+
+We explore the use of the validation set approach in order to estimate the test error rates that result from fitting various linear models on the `Auto` data set.
+
+Before we begin, we use the `set.seed()` function in order to set a seed for seed `R`'s random number generator, so that the reader will obtain precisely the same results as those shown below. It is generally a good idea to set a random seed when performing an analysis such as cross-validation that contains an element of randomness, so that the results obtained can be reproduced precisely at a later time.
+
+We begin by using the `sample()` function to split the set of observations
+into two halves, by selecting a random subset of 196 observations out of the original 392 observations. We refer to these observations as the training set.
+
+```{r}
+library(ISLR)
+set.seed(1)
+train <- sample(392, 196)
+```
+
+(Here we use a shortcut in the sample command; see `?sample` for details.) We then use the subset option in `lm()` to fit a linear regression using only the observations corresponding to the training set.
+
+```{r}
+lm.fitA <- lm(mpg ~ horsepower, data = Auto, subset = train)
+trainSET <- Auto[train, ]
+validSET <- Auto[-train, ]
+lm.fitB <- lm(mpg ~ horsepower, data = trainSET)
+summary(lm.fitA)
+summary(lm.fitB)
+```
+
+_________________
+
+
